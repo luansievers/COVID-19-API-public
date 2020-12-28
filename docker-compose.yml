@@ -1,0 +1,32 @@
+version: '3.7'
+
+services:
+  api-service:
+    image: luansievers/covid-api
+    container_name: covid-api
+    build: .
+    depends_on:
+      - db-service
+    ports:
+      - "49160:3333"
+    env_file: .env
+    networks:
+      - covid-network
+  db-service:
+    image: mdillon/postgis:10-alpine
+    container_name: covid-db
+    ports:
+      - "35432:5432"
+    environment:
+      POSTGRES_USER: 'api-adonis-user'
+      POSTGRES_PASSWORD: '6y2d^#PfbYEy'
+      POSTGRES_DB: covid_19
+    volumes:
+      - covid-db-data:/var/lib/postgresql/data
+    networks:
+      - covid-network
+volumes:
+  covid-db-data:
+networks:
+  covid-network:
+    name: covid-network
